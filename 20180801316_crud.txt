@@ -145,3 +145,24 @@ from KRS K, MATAKULIAH MK
 where K.KDMK=MK.KDMK
 group by K.KDMK, MK.NAMA
 order by JUMLAH desc;
+
+-- no 6
+select o.orderno, o.dateorder, o.customer, p.productname, od.quantity, p.sellprice, (quantity*sellprice) as total
+from torder o, orderdetails od, product p
+where o.orderno=od.orderno and p.productname=od.productname
+
+-- no 7
+SELECT productname, sum(quantity)
+FROM orderdetails
+GROUP BY productname, quantity
+ORDER BY quantity desc
+
+-- no 8
+select O.ORDERNO, CUSTOMER, S.PRODUCTNAME, OD.QUANTITY AS QTYSELL, DATEORDER,
+ S.QUANTITY AS QTYFROM, to_char(OD.QUANTITY/S.QUANTITY*100)||' %' AS PERCENTAGE 
+from TORDER O
+join ORDERDETAILS OD
+on O.ORDERNO=OD.ORDERNO
+join STOCK S
+on S.PRODUCTNAME=OD.PRODUCTNAME
+order by ORDERNO ASC
