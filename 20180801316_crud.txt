@@ -166,3 +166,25 @@ on O.ORDERNO=OD.ORDERNO
 join STOCK S
 on S.PRODUCTNAME=OD.PRODUCTNAME
 order by ORDERNO ASC
+
+-- update tambah product
+create or replace trigger nov_update_qty_product
+before insert on nov_purchase
+    for each row    
+    when (new.nama is not null)
+begin
+    update nov_product
+    set qty_stock = qty_stock + :new.qty
+    where nama = :new.nama;
+end;
+
+-- update kurang product
+create or replace trigger nov_update_min_qty_product
+before insert on nov_sell
+    for each row    
+    when (new.nama is not null)
+begin
+    update nov_product
+    set qty_stock = qty_stock - :new.qty
+    where nama = :new.nama;
+end;
