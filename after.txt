@@ -1,0 +1,21 @@
+-- update tambah product
+create or replace trigger nov_update_qty_product
+before insert on nov_purchase
+    for each row    
+    when (new.nama is not null)
+begin
+    update nov_product
+    set QUANTITY = QUANTITY + :new.qty
+    where nama = :new.nama;
+end;
+
+--update kurang product--
+CREATE OR REPLACE TRIGGER NOV_MIN_QTY_PRODUCT
+BEFORE INSERT ON NOV_SELLL
+  FOR EACH ROW 
+  WHEN (NEW.NAMA IS NOT NULL)
+BEGIN
+  UPDATE NOV_PRODUCT
+  SET QUANTITY = QUANTITY - :NEW.QTY
+  WHERE NAMA =:NEW.NAMA;
+END
