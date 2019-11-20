@@ -128,3 +128,33 @@ END;
 SELECT * FROM NOV_PURCHASE
 INSERT INTO NOV_PURCHASE
 VALUES('HEXOHM',25) //syntax ini untuk menambahkan data '+25' pada kolom 'nama' item product hexohm, setelah di trigger
+
+============
+TRIGGER SELL
+============
+
+SELECT * FROM NOV_PRODUCT
+DESC NOV_PRODUCT
+INSERT INTO NOV_PRODUCT
+VALUES('HEXOHM',125)
+INSERT INTO NOV_PRODUCT
+VALUES('LIQUID',100)
+INSERT INTO NOV_PRODUCT
+VALUES('RDA',100)
+
+CREATE OR REPLACE TRIGGER NOV_SELL_QTY_PRODUCT 
+BEFORE INSERT OR UPDATE ON NOV_SELL 
+FOR EACH ROW
+WHEN (NEW.nama IS NOT NULL)
+BEGIN
+    UPDATE NOV_PRODUCT 
+SET QTY_STOCK = QTY_STOCK - :NEW.qty 
+    WHERE NAMA = :NEW.nama; 
+END;
+
+SELECT * FROM NOV_SELL
+INSERT INTO NOV_SELL
+VALUES('LIQUID',75) //syntax ini untuk mengurangi data '-75' pada kolom 'nama' item product liquid, setelah di trigger
+
+
+/.../
