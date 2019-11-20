@@ -1,0 +1,85 @@
+create or replace trigger nov_update_qty_product
+before insert on nov_purchase
+    for each row    
+    when (new.nama is not null)
+begin
+    update nov_product
+    set qty_stock = qty_stock + :new.qty
+    where nama = :new.nama;
+end;
+
+-- update kurang product
+create or replace trigger nov_update_min_qty_product
+before insert on nov_sell
+    for each row    
+    when (new.nama is not null)
+begin
+    update nov_product
+    set qty_stock = qty_stock - :new.qty
+    where nama = :new.nama;
+end;
+
+CONTOH INPUTNYA
+
+insert into nov_pro
+values ('sgm',10)
+
+insert into nov_pro
+values ('smm',7)
+
+insert into nov_pro
+values ('beng_beng',5)
+
+
+select * from nov_pro
+
+select * from nov_purchase
+
+insert into nov_purchase
+values ('sgm',10)
+
+insert into nov_purchase
+values ('smm',7)
+
+insert into nov_purchase
+values ('beng_beng',5)
+
+desc nov_purchase
+desc nov_pro
+desc nov_jual
+
+create or replace trigger nov_pruchase_quantity_nov_pro
+before insert on nov_purchase
+for each row
+when (new.nama is not null)
+begin
+   update nov_pro
+   set quantity = quantity + :new.quantity
+   where nama = :new.nama;
+end;
+
+
+
+
+select * from nov_jual
+
+insert into nov_jual
+values ('sgm', 10)
+
+
+insert into nov_jual
+values ('beng_beng', 10)
+
+
+insert into nov_jual
+values ('smm', 10)
+
+create or replace trigger nov_jual_quantity_nov_pro
+before insert on nov_jual
+for each row
+when (new.nama is not null)
+begin
+   update nov_pro
+   set quantity = quantity - :new.quantity
+   where nama = :new.nama;
+end;
