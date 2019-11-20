@@ -1,0 +1,47 @@
+===========================================
+	AULIA ALFINA RAHMADANTI
+	20180801369
+	TEKNIK INFORMATIKA
+==========================================
+
+insert into A_PRODUCT
+values('BENG-BENG',5)
+insert into A_PRODUCT
+values('SMM',7)
+insert into A_PRODUCT
+values('SGM',12)
+
+select * from A_PRODUCT
+select * from A_PURCHASE
+select * from A_SALES
+
+insert into A_PURCHASE
+values('SMM','5')
+
+insert into A_SALES
+values('SGM',2)
+
+============================================
+TRIGGER INSERT
+
+create or replace TRIGGER nov_purchase_qty_product
+BEFORE INSERT OR UPDATE ON A_PURCHASE
+FOR EACH ROW
+WHEN (NEW.NAMA IS NOT NULL)
+BEGIN
+     UPDATE A_PRODUCT
+     SET qty_stock = qty_stock + :NEW.qty
+     WHERE nama = :NEW.nama;
+END;
+=========================================
+TRIGGER DELETE
+
+create or replace TRIGGER NOV_SALESS_QTY_PRODUCT
+BEFORE INSERT OR UPDATE ON A_SALES
+FOR EACH ROW
+WHEN (NEW.NAMA IS NOT NULL)
+BEGIN
+     UPDATE A_PRODUCT
+     SET qty_stock = qty_stock - :NEW.qty_sales
+     WHERE nama = :NEW.nama;
+END;
