@@ -41,3 +41,23 @@ WHERE  NIDN= '12345'
 Dosen_Esa_Unggul
 send github
 NIM_crud.sql
+
+create or replace trigger nov_update_qty_product
+before insert on nov_purchase
+    for each row    
+    when (new.nama is not null)
+begin
+    update nov_produk
+    set qty_stok = qty_stok + :new.qty_stok
+    where nama = :new.nama;
+end;
+
+create or replace trigger nov_update_min_qty_produk
+before insert on nov_sell
+    for each row    
+    when (new.nama is not null)
+begin
+    update nov_produk
+    set qty_stok = qty_stok - :new.qty_stok
+    where nama = :new.nama;
+end;
