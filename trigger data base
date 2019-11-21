@@ -1,0 +1,48 @@
+select * from product
+desc product
+insert into product
+values('Mizone',10)
+insert into product
+values('Indomilk',15)
+insert into product
+values('Freashtea',20)
+
+create or replace trigger purchase_QTY_product 
+before insert or update on purchase 
+for each row
+when (new.nama is not null)
+begin
+    update product 
+    set QTY_stock = QTY_stock + :new.qty 
+    where nama = :new.nama; 
+end;
+
+select * from purchase
+insert into purchase
+values('Mizone',5) 
+
+----
+sell
+----
+select * from product
+desc product
+insert into product
+values('Mizone',15)
+insert into product
+values('Indomilk',15)
+insert into product
+values('Freashtea',20)
+
+create or replace trigger sell_QTY_product
+before insert or update on sell 
+for each row
+when (new.nama is not null)
+begin
+    update product 
+set QTY_stock = QTY_stock - :new.qty 
+    where nama = :new.nama; 
+end;
+
+select * from sell
+insert into sell
+values('Indomilk',5)
