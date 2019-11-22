@@ -1,0 +1,133 @@
+============================RIZKI FARO KHATIINGSIH===============================
+---------------------------------(20180801310)-----------------------------------
+
+1). INSERT TABEL FNOV_PRODUCT FNOV_PURCHASE FNOV_SALES
+==================================================================================
+
+DESC FNOV_PRODUCT
+insert into fnov_product
+values ('ULTRAMILK','7')
+
+insert into fnov_product
+valuees ('TANGO','5')
+
+==================================================================================
+
+DESC FNOV_PURCHASE
+insert into fnov_purchase
+values ('ULTRAMILK,'5')
+
+insert into fnov_purchase
+values ('TANGO,'3')
+
+==================================================================================
+
+DESC FNOV_SALES
+insert into FNOV_SALES
+values ('SMM','2')
+
+
+2). QUERY TABLE
+
+==================================================================================
+
+//PRODUCT
+CREATE TABLE  "FNOV_PRODUCT" 
+   (	"NAMA" VARCHAR2(30), 
+	"QUANTITY" NUMBER, 
+	 CONSTRAINT "FNOV_PRODUCT_PK" PRIMARY KEY ("NAMA") ENABLE
+   )
+/
+
+
+CREATE OR REPLACE TRIGGER  "BI_FNOV_PRODUCT" 
+  before insert on "FNOV_PRODUCT"               
+  for each row  
+begin   
+  if :NEW."NAMA" is null then 
+    select "FNOV_PRODUCT_SEQ".nextval into :NEW."NAMA" from sys.dual; 
+  end if; 
+end; 
+
+/
+ALTER TRIGGER  "BI_T_GUDANG" ENABLE
+/
+
+//PURCHASE
+CREATE TABLE  "T_PURCHASE" 
+   (	"NAMA_BARANG" VARCHAR2(50), 
+	"QUANTITY" NUMBER
+   )
+/
+ALTER TABLE  "T_PURCHASE" ADD CONSTRAINT "T_PURCHASE_FK" FOREIGN KEY ("NAMA_BARANG")
+	  REFERENCES  "T_GUDANG" ("NAMA_BARANG") ENABLE
+/
+
+
+CREATE OR REPLACE TRIGGER  "T_PURCHASE" 
+before insert or update on T_PURCHASE
+for each row
+ WHEN (new.nama_barang is not null) begin
+update T_GUDANG
+set quantity = quantity + :new.quantity
+where nama_barang = :new.nama_barang;
+end;
+/
+ALTER TRIGGER  "T_PURCHASE" ENABLE
+/	
+
+//SALES
+CREATE TABLE  "T_SALES" 
+   (	"NAMA_BARANG" VARCHAR2(50), 
+	"QUANTITY" NUMBER
+   )
+/
+ALTER TABLE  "T_SALES" ADD CONSTRAINT "T_SALES_FK" FOREIGN KEY ("NAMA_BARANG")
+	  REFERENCES  "T_GUDANG" ("NAMA_BARANG") ENABLE
+/
+
+
+CREATE OR REPLACE TRIGGER  "T_SALES" 
+before insert or update on T_SALES
+for each row
+ WHEN (new.nama_barang is not null) begin
+update T_GUDANG
+set quantity = quantity - :new.quantity
+where nama_barang = :new.nama_barang;
+end;
+/
+ALTER TRIGGER  "T_SALES" ENABLE
+
+
+==================================================================================
+
+3). TRIGGER FNOV_PURCHASE (Menambah qty dari tabel FNOV_PURCHASE ke FNOV_PRODUCT)
+
+==================================================================================
+create or replace TRIGGER fnov_purchase_qyt_product
+BEFORE INSERT OR UPDATE ON FNOV_PURCHASE
+FOR EACH ROW
+WHEN (NEW.NAMA IS NOT NULL)
+BEGIN
+	UPDATE FNOV_PRODUCT
+	SET QTY_STOCK= QTY_STOCK + :NEW.QTY
+	WHERE NAMA = :NEW.NAMA;
+END
+
+==================================================================================
+
+4). TRIGGER SALES (Mengurangi qty dari tabel FNOV_PRODUCT ke FNOV_SALES)
+
+==================================================================================
+
+create or replace TRIGGER fnov_purchase_quantity_product
+BEFORE INSERT OR UPDATE ON FNOV_PURCHASE
+FOR EACH ROW
+WHEN (NEW.NAMA IS NOT NULL)
+BEGIN
+	UPDATE FNOV_PRODUCT
+	SET QTY_STOCK= QTY_STOCK - :NEW.QTY
+	WHERE NAMA = :NEW.NAMA;
+END
+
+==================================================================================
