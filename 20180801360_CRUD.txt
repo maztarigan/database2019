@@ -1,0 +1,46 @@
+Insert into NOV_PRODUK
+Values('Beng_Beng',12)
+Insert into NOV_PRODUK
+Values('SGM',7)
+Insert into NOV_PRODUK
+Values('SMM',7)
+
+***********************************************************************
+
+select * from NOV_PRODUK
+select * from NOV_PURCHASE
+select * from NOV_SALES
+
+Insert into NOV_PURCHASE
+Values('SGM',7)
+
+insert into NOV_SALES
+values('Beng_Beng',2)
+*******************************************************
+	       TRIGGER INSERT
+*******************************************************
+create or replace TRIGGER NOV_PURCHASE_QUANTITY_PRODUK
+BEFORE INSERT OR UPDATE ON NOV_PURCHASE
+FOR EACH ROW
+WHEN (NEW.NAMA )
+BEGIN
+     UPDATE NOV_PRODUK
+     SET QUANTITY_stock = QUANTITY_stock + :NEW.QUANTITY
+     WHERE NAMA = :NEW.NAMA;
+END;
+
+************************************************************
+	       TRIGGER DELETE
+************************************************************
+create or replace TRIGGER NOV_SALES_QUANTITY_PRODUK
+BEFORE INSERT OR UPDATE ON NOV_SALES
+FOR EACH ROW
+WHEN (NEW.NAMA )
+BEGIN
+     UPDATE NOV_PRODUK
+     SET QUANTITY_stock = QUANTITY_stock - :NEW.QUANTITY_SALES
+     WHERE NAMA= :NEW.NAMA;
+END;
+
+
+
