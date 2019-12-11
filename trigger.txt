@@ -1,0 +1,103 @@
+CREATE TABLE  "ST_MAHASISWA" 
+   (	"NIM" VARCHAR2(15) NOT NULL ENABLE, 
+	"NAMA" VARCHAR2(25) NOT NULL ENABLE, 
+	"FAKULTAS" VARCHAR2(15) NOT NULL ENABLE, 
+	"HP" NUMBER, 
+	 CONSTRAINT "ST_MAHASISWA_PK" PRIMARY KEY ("NIM") ENABLE
+   )
+/
+
+
+CREATE OR REPLACE TRIGGER  "BI_ST_MAHASISWA" 
+  before insert on "ST_MAHASISWA"               
+  for each row  
+begin   
+  if :NEW."NIM" is null then 
+    select "ST_MAHASISWA_SEQ".nextval into :NEW."NIM" from sys.dual; 
+  end if; 
+end; 
+
+/
+ALTER TRIGGER  "BI_ST_MAHASISWA" ENABLE
+/
+
+
+CREATE TABLE  "ST_MKULIAH" 
+   (	"KD_MK" VARCHAR2(10) NOT NULL ENABLE, 
+	"NM_MK" VARCHAR2(25) NOT NULL ENABLE, 
+	 CONSTRAINT "ST_MKULIAH_PK" PRIMARY KEY ("KD_MK") ENABLE
+   )
+/
+
+
+CREATE OR REPLACE TRIGGER  "BI_ST_MKULIAH" 
+  before insert on "ST_MKULIAH"               
+  for each row  
+begin   
+  if :NEW."KD_MK" is null then 
+    select "ST_MKULIAH_SEQ".nextval into :NEW."KD_MK" from sys.dual; 
+  end if; 
+end; 
+
+/
+ALTER TRIGGER  "BI_ST_MKULIAH" ENABLE
+/
+
+
+CREATE TABLE  "ST_UJIAN" 
+   (	"NIM" VARCHAR2(15) NOT NULL ENABLE, 
+	"KD_MK" VARCHAR2(10) NOT NULL ENABLE, 
+	"ANGKA" NUMBER NOT NULL ENABLE, 
+	"HURUF" CHAR(1)
+   )
+/
+ALTER TABLE  "ST_UJIAN" ADD CONSTRAINT "ST_UJIAN_FK" FOREIGN KEY ("NIM")
+	  REFERENCES  "ST_MAHASISWA" ("NIM") ENABLE
+/
+ALTER TABLE  "ST_UJIAN" ADD CONSTRAINT "ST_UJIAN_FK2" FOREIGN KEY ("KD_MK")
+	  REFERENCES  "ST_MKULIAH" ("KD_MK") ENABLE
+/
+
+
+CREATE TABLE  "ST_REKAP" 
+   (	"NIM" VARCHAR2(15) NOT NULL ENABLE, 
+	"KD_MK" VARCHAR2(10) NOT NULL ENABLE, 
+	"ANGKA" CHAR(1) NOT NULL ENABLE
+   )
+/
+ALTER TABLE  "ST_REKAP" ADD CONSTRAINT "ST_REKAP_FK" FOREIGN KEY ("NIM")
+	  REFERENCES  "ST_MAHASISWA" ("NIM") ENABLE
+/
+ALTER TABLE  "ST_REKAP" ADD CONSTRAINT "ST_REKAP_FK2" FOREIGN KEY ("KD_MK")
+	  REFERENCES  "ST_MKULIAH" ("KD_MK") ENABLE
+/
+
+
+
+create or replace trigger "update_tabel_rekap"
+before delete or insert or update on ST_UJIAN
+for each row
+
+declare
+konversi char(1);
+
+begin
+if (:new.angka > 79) then
+konversi := 'A';
+end if;
+if (69 < :new.angka) and (:new.angka < 80) then
+konversi := 'B';
+end if;
+if (59 < :new.angka) and (:new.angka < 70) then
+konversi := 'C';
+end if;
+if (49 < :new.angka) and (:new.angka < 60) then
+konversi := 'D';
+end if;
+if (:new.angka < 50) then
+konversi := 'E';
+end if
+
+insert into ST_REKAP 
+values(:new.nim, :new.kd_mk,konversi)
+end;
