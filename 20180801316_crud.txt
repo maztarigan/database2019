@@ -188,3 +188,93 @@ begin
     set qty_stock = qty_stock - :new.qty
     where nama = :new.nama;
 end;
+
+select * from st_mahasiswa
+select * from st_mkuliah
+select * from st_ujian
+select * from st_rekap
+
+truncate st_ujian
+
+insert into st_ujian values ('20180801317', 'CR103', 90, null)
+
+CREATE OR REPLACE TRIGGER "ST_UPDATE_ANGKA_KE_HURUF" 
+AFTER INSERT ON ST_UJIAN
+FOR EACH ROW
+
+DECLARE
+	konversi char(1);
+BEGIN
+	IF (:NEW.angka > 79) THEN
+		konversi := 'A';
+	END IF;
+	
+	IF (:NEW.angka > 69) AND (:NEW.angka < 80) THEN
+		konversi := 'B';
+	END IF;
+	
+	IF (:NEW.angka > 59) AND (:NEW.angka < 70) THEN
+		konversi := 'C';
+	END IF;
+	IF (:NEW.angka > 49) AND (:NEW.angka < 60) THEN
+		konversi := 'D';
+	END IF;
+	IF (:NEW.angka < 50) THEN
+		konversi := 'E';
+	END IF;
+	
+	INSERT INTO ST_REKAP
+	VALUES(:NEW.NIM, :NEW.KD_MK, konversi);
+END;
+
+select a.nim, b.nama, a.kd_mk, c.nm_mk 
+from st_rekap a, st_mahasiswa b, st_mkuliah c
+where b.nim = a.nim and c.kd_mk = a.kd_mk 
+
+CREATE OR REPLACE PROCEDURE insert_ujian2(
+    in_nim IN CHAR,
+    in_kd_mk IN CHAR,
+    in_angka IN FLOAT
+)
+IS
+BEGIN 
+    INSERT INTO st_ujian2(nim, kd_mk, angka)
+    values (in_nim, in_kd_mk, in_angka);
+end;
+
+BEGIN 
+    insert_ujian2('20180801316', 'CR102', 80);
+END;
+
+CREATE OR REPLACE PROCEDURE delete_ujian2(
+    in_nim IN CHAR,
+    in_kd_mk IN CHAR,
+    in_angka IN FLOAT
+)
+IS
+BEGIN 
+    DELETE FROM st_ujian2
+    WHERE nim=in_nim and kd_mk=in_kd_mk and angka=in_angka;
+end;
+
+BEGIN 
+    delete_ujian2('20180801316', 'CR102', 80);
+END;
+
+CREATE OR REPLACE PROCEDURE update_ujian2(
+    in_nim IN CHAR,
+    in_kd_mk IN CHAR,
+    in_angka IN FLOAT
+)
+IS
+BEGIN 
+    UPDATE st_ujian2
+    SET angka=in_angka
+    WHERE nim=in_nim and kd_mk=in_kd_mk;
+end;
+
+BEGIN 
+    update_ujian2('20180801316', 'CR103', 100);
+END;
+
+https://www.mkyong.com/oracle/oracle-stored-procedure-delete-example/
