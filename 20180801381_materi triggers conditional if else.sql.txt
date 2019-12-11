@@ -1,0 +1,57 @@
+select * from st_mahasiswa_des
+desc st_mahasiswa_des
+insert into st_mahasiswa_des
+values('20180801385','Decky Nesctya','BIN','081356157080')
+
+select * from st_mkuliah_des
+desc st_mkuliah_des
+insert into st_mkuliah_des
+values('666999','Android Studio')
+
+select * from st_ujian_des
+desc st_ujian_des
+insert into st_ujian_des
+values('20180801381','666404','100','A')
+insert into st_ujian_des
+values('20180801382','666404','97','A')
+insert into st_ujian_des
+values('20180801383','666404','79','B')
+insert into st_ujian_des
+values('20180801384','666420','69','C')
+insert into st_ujian_des
+values('20180801385','666808','55','D')
+
+CREATE OR REPLACE TRIGGER  "ST_UPDATE_ANGKA_KE_HURUF" 
+BEFORE DELETE OR INSERT OR UPDATE ON ST_UJIAN_DES
+FOR EACH ROW
+ 
+DECLARE
+ konversi char(1);
+ nilai float(2);
+
+WHEN (NEW.angka > 0) 
+BEGIN
+ nilai = :NEW.angka;
+ IF nilai > 79 THEN
+    konversi := 'A';
+ ELSEIF 69 < nilai < 80 THEN
+         konversi := 'B';
+      ELSEIF 59 < nilai < 70 THEN
+              konversi := 'C';
+           ELSEIF 49 < nilai < 60 THEN
+                   konversi := 'D';
+                 ELSE
+                    konversi := 'E';
+ ENDIF;
+   UPDATE ST_UJIAN_DES
+    SET huruf = konversi
+    WHERE NIM = :NEW.nim and KD_MK = :NEW.kd_mk;
+END;
+
+
+
+
+
+
+
+

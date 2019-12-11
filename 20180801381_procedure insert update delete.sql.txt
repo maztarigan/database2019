@@ -1,0 +1,111 @@
+select * from st_ujian_des
+desc st_ujian_des
+
+select * from st_mkuliah_des
+desc st_mkuliah_des
+
+select * from st_rekap_des
+desc st_rekap_des
+
+select * from st_mahasiswa_des
+desc st_mahasiswa_des
+
+select distinct a.nim, b.nama, a.kd_mk, c.nm_mk 
+from st_rekap_des a, st_mahasiswa_des b, st_mkuliah_des c
+where b.nim = a.nim and c.kd_mk = a.kd_mk
+
+insert into st_ujian_des
+values('','','','')
+
+insert_ujian('20180801381','666404','86')
+
+CREATE OR REPLACE PROCEDURE insert_ujian(
+ nim_input IN char,
+ kd_mk_input IN char,
+ nilai_input IN number)
+IS 
+BEGIN
+ INSERT INTO st_ujian_des (nim,kd_mk,angka)
+ values(nim_input,kd_mk_input,nilai_input); //banyak yg bisa di setting disini, real programming
+END;
+
+/ ... // ... / -> Update
+
+CREATE OR REPLACE PROCEDURE update_ujian(
+ nim_input IN char,
+ kd_mk_input IN char,
+ nilai_input IN number)
+IS 
+BEGIN
+UPDATE st_ujian_des
+SET nim = '20180801666',
+    kd_mk = '666808',
+    angka = '69'
+WHERE nim = '20180801382' 
+END;
+
+desc 
+select * from st_rekap_des
+
+begin
+insert_ujian('20180801383','666808',88);
+end;
+
+select * from st_ujian_des
+desc st_ujian_des
+
+select * from st_mkuliah_des
+desc st_mkuliah_des
+
+select * from st_rekap_des
+desc st_rekap_des
+
+select * from st_mahasiswa_des
+desc st_mahasiswa_des
+
+select distinct a.nim, b.nama, a.kd_mk, c.nm_mk 
+from st_rekap_des a, st_mahasiswa_des b, st_mkuliah_des c
+where b.nim = a.nim and c.kd_mk = a.kd_mk
+
+insert into st_ujian_des
+values('','','','')
+
+CREATE OR REPLACE PROCEDURE insert_ujian(
+ nim_input IN char,
+ kd_mk_input IN char,
+ nilai_input IN number)
+IS 
+BEGIN
+ INSERT INTO st_ujian_des (nim,kd_mk,angka)
+ values(nim_input,kd_mk_input,nilai_input); //banyak yg bisa di setting disini, real programming
+END;
+
+desc select * from st_ujian_des
+select * from st_rekap_des
+
+begin
+insert_ujian('20180801383','666808',88);
+end;
+
+CREATE PROCEDURE update_ujian(
+ updtnim_input IN char,
+ updtkd_mk_input IN char,
+ updtangka_input IN number)
+IS 
+BEGIN
+UPDATE st_ujian_des SET angka = updtangka_input WHERE nim = updtnim_input and kd_mk = updtkd_mk_input; 
+END;
+
+
+begin
+update_ujian('20180801384','666420',88);
+end;
+
+CREATE PROCEDURE delete_ujian(
+ updtnim_input IN char,
+ updtkd_mk_input IN char,
+ updtangka_input IN number)
+IS 
+BEGIN
+DELETE FROM st_ujian_des WHERE nim = updtnim_input, kd_mk = updtkd_mk_input;
+END;
