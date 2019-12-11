@@ -1,0 +1,23 @@
+create or replace PROCEDURE insert_ujian(
+	nim_input IN char,
+	kd_mk input IN char,
+	   nilai_input IN Number)
+IS
+BEGIN
+   INSERT INTO st_ujian(nim,kd_mk,angka)
+   values(nim_input,kd_mk_input,nilai_input);
+END;
+
+begin
+	insert_ujian('20180801315','cro23','76,'')
+
+create or replace PROCEDURE insert_ujian(
+	nim_input IN char,
+	kd_mk input IN char,
+	   nilai_input IN Number)
+IS
+BEGIN 
+    UPDATE st_ujian2
+    SET nim=n_in_nim, kd_mk=n_in_kd_mk, angka=n_in_angka
+    WHERE nim=in_nim and kd_mk=in_kd_mk and angka=in_angka;
+end;
