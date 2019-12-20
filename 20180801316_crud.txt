@@ -278,3 +278,6 @@ BEGIN
 END;
 
 https://www.mkyong.com/oracle/oracle-stored-procedure-delete-example/
+
+-- aplikasi oracle dataase
+https://youtu.be/Jhtk73bsBJU
