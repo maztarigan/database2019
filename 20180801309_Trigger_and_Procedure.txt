@@ -1,0 +1,170 @@
+select a.nim, b.nama, a.kd_mk, c.nm_mk 
+from st_rekap a, st_mahasiswa b, st_mkuliah c
+where b.nim = a.nim and c.kd_mk = a.kd_mk
+
+
+CREATE OR REPLACE TRIGGER  "ST_UPDATE_ANGKA_KE_HURUF" 
+AFTER INSERT ON ST_UJIAN
+FOR EACH ROW
+
+DECLARE
+	konversi char(1);
+BEGIN
+	IF (:NEW.angka > 79) THEN
+		konversi := 'A';
+	ELSIF (69 < :NEW.angka) AND (:NEW.angka < 80) THEN
+		konversi := 'B';
+	ELSIF (59 < :NEW.angka) AND (:NEW.angka < 70) THEN
+		konversi := 'C';
+	ELSIF (49 < :NEW.angka) AND (:NEW.angka < 60) THEN
+		konversi := 'D';
+	ELSIF (:NEW.angka < 50) THEN
+		konversi := 'E';
+	END IF;
+	
+	INSERT INTO ST_REKAP
+	VALUES(:NEW.NIM, :NEW.KD_MK, konversi);
+END;
+
+// Membuat PROCEDURE 'insert_ujian'
+CREATE OR REPLACE PROCEDURE insert_ujian(
+    in_nim IN VARCHAR2,
+    in_kd_mk IN CHAR,
+    in_angka IN NUMBER
+)
+IS
+BEGIN 
+    INSERT INTO st_ujian(nim, kd_mk, angka)
+    values (in_nim, in_kd_mk, in_angka);
+end;
+
+// Hapus PROCEDURE 'insert_ujian'
+DROP PROCEDURE insert_ujian; 
+
+
+// Menambah data dengan  PROCEDURE 'insert_ujian'
+begin
+insert_ujian('20180801311', 'CR203', 89);
+end;
+
+
+// Membuat PROCEDURE 'insert_ujian'
+CREATE OR REPLACE PROCEDURE insert_ujian(
+    in_nim IN VARCHAR2,
+    in_kd_mk IN CHAR,
+    in_angka IN NUMBER
+)
+IS
+BEGIN 
+    INSERT INTO st_ujian(nim, kd_mk, angka)
+    values (in_nim, in_kd_mk, in_angka);
+end;
+
+// Hapus PROCEDURE 'insert_ujian'
+DROP PROCEDURE insert_ujian; 
+select * from st_mahasiswa
+
+begin
+insert_ujian('20180801311', 'CR203', 77);
+end;
+
+// Update
+begin
+update_ujian('20180801311', 'CR203', 77, '20180801311', 'CR203', 89);
+end;
+
+// Delete
+begin
+update_ujian('20180801311', 'CR203', 77, '20180801311', 'CR203', 89);
+end;
+
+select * from st_ujian
+
+// Menambah data dengan  PROCEDURE 'insert_ujian'
+begin
+insert_ujian('20180801311', 'CR203', 89);
+end;
+
+
+// Merubah dengan PROCEDURE 'update_ujian'
+CREATE OR REPLACE PROCEDURE update_ujian(
+    in_nim IN VARCHAR2,
+    in_kd_mk IN CHAR,
+    in_angka IN NUMBER,
+    n_in_nim IN VARCHAR2,
+    n_in_kd_mk IN CHAR,
+    n_in_angka IN NUMBER
+)
+IS
+BEGIN 
+    UPDATE st_ujian
+    SET nim=n_in_nim, kd_mk=n_in_kd_mk, angka=n_in_angka
+    WHERE nim=in_nim and kd_mk=in_kd_mk and angka=in_angka;
+end;
+
+CREATE OR REPLACE PROCEDURE update_angka_ujian(
+    in_nim IN VARCHAR2,
+    in_kd_mk IN CHAR,
+    in_angka IN NUMBER
+)
+IS
+BEGIN 
+    UPDATE st_ujian
+    SET angka=in_angka
+    WHERE nim=in_nim and kd_mk=in_kd_mk;
+end;
+
+// Hapus dengan PROCEDURE 'delete_ujian'
+CREATE OR REPLACE PROCEDURE delete_ujian(
+    in_nim IN VARCHAR2,
+    in_kd_mk IN CHAR,
+    in_angka IN NUMBER
+)
+IS
+BEGIN 
+    DELETE FROM st_ujian
+    WHERE nim=in_nim and kd_mk=in_kd_mk and angka=in_angka;
+end;
+
+
+
+
+====================================
+
+
+select a.nim, b.nama, a.kd_mk, c.nm_mk 
+from st_rekap a, st_mahasiswa b, st_mkuliah c
+where b.nim = a.nim and c.kd_mk = a.kd_mk
+
+select * from st_mahasiswa
+select * from st_mkuliah
+select * from st_ujian
+select * from st_rekap
+
+delete from st_rekap
+delete from st_ujian
+
+desc st_ujian
+
+insert into st_ujian(nim,kd_mk,angka)
+values('20180801310', 'CR202', '77')
+
+insert into st_ujian
+
+CREATE OR REPLACE TRIGGER  "T_IS_PEMBELIAN" 
+BEFORE INSERT OR UPDATE ON IS_PEMBELIAN
+FOR EACH ROW
+WHEN (new.prod_id is not null) BEGIN
+	UPDATE IS_PRODUCT
+	SET stok = stok + :new.jumlah
+	WHERE prod_id = :new.prod_id;
+END;
+
+CREATE OR REPLACE TRIGGER  "T_IS_PENJUALAN" 
+BEFORE INSERT OR UPDATE ON IS_PENJUALAN
+FOR EACH ROW
+WHEN (new.prod_id is not null) BEGIN
+	UPDATE IS_PRODUCT
+	SET stok = stok - :new.jumlah
+	WHERE prod_id = :new.prod_id;
+END;
