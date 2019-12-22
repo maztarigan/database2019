@@ -1,0 +1,175 @@
+CREATE TABLE  "D_PRODUK" 
+   (	"ID_PRODUK" VARCHAR2(25) NOT NULL ENABLE, 
+	"NAMA_PRODUK" VARCHAR2(50) NOT NULL ENABLE, 
+	"STOK" NUMBER NOT NULL ENABLE, 
+	"HARGA_BELI" NUMBER NOT NULL ENABLE, 
+	"HARGA_JUAL" NUMBER NOT NULL ENABLE, 
+	 CONSTRAINT "D_PRODUK_PK" PRIMARY KEY ("ID_PRODUK") ENABLE
+   )
+
+
+CREATE TABLE  "D_VENDOR" 
+   (	"ID_VENDOR" VARCHAR2(25) NOT NULL ENABLE, 
+	"NAMA_VENDOR" VARCHAR2(50) NOT NULL ENABLE, 
+	"ALAMAT" VARCHAR2(50), 
+	"TELP" NUMBER, 
+	 CONSTRAINT "D_VENDOR_PK" PRIMARY KEY ("ID_VENDOR") ENABLE
+   )
+
+
+CREATE TABLE  "D_CUSTOMER" 
+   (	"ID_CUST" VARCHAR2(25) NOT NULL ENABLE, 
+	"NAMA_CUST" VARCHAR2(50) NOT NULL ENABLE, 
+	"ALAMAT" VARCHAR2(50), 
+	"TELP" NUMBER, 
+	 CONSTRAINT "D_CUSTOMER_PK" PRIMARY KEY ("ID_CUST") ENABLE
+   )
+
+
+
+CREATE TABLE  "D_PEMBELIAN" 
+   (	"NO_ORDER" VARCHAR2(25) NOT NULL ENABLE, 
+	"ID_VENDOR" VARCHAR2(25) NOT NULL ENABLE, 
+	"ID_PRODUK" VARCHAR2(25) NOT NULL ENABLE, 
+	"JUMLAH" NUMBER NOT NULL ENABLE, 
+	"HARGA" NUMBER, 
+	"TGL_BELI" DATE, 
+	 CONSTRAINT "D_PEMBELIAN_PK" PRIMARY KEY ("NO_ORDER") ENABLE
+   )
+/
+ALTER TABLE  "D_PEMBELIAN" ADD CONSTRAINT "D_PEMBELIAN_FK" FOREIGN KEY ("ID_VENDOR")
+	  REFERENCES  "D_VENDOR" ("ID_VENDOR") ENABLE
+/
+ALTER TABLE  "D_PEMBELIAN" ADD CONSTRAINT "D_PEMBELIAN_FK2" FOREIGN KEY ("ID_PRODUK")
+	  REFERENCES  "D_PRODUK" ("ID_PRODUK") ENABLE
+/
+
+
+
+CREATE OR REPLACE TRIGGER  "PEMBELIAN" 
+before insert or update on D_PEMBELIAN
+for each row
+  WHEN (new.id_produk is not null) begin
+update D_PRODUK
+set stok = stok + :new.jumlah
+where id_produk = :new.id_produk;
+end;
+/
+ALTER TRIGGER  "PEMBELIAN" ENABLE
+/
+
+
+create or replace PROCEDURE insert_beli(
+Nno_order  IN varchar,
+nid_vendor IN varchar,
+nid_produk IN varchar,
+njumlah IN number)
+
+IS
+BEGIN
+INSERT INTO D_PEMBELIAN(no_order,id_vendor,id_produk,jumlah)
+values(Nno_order,nid_vendor,nid_produk,njumlah);
+end;
+
+
+create or replace PROCEDURE update_beli(
+Nno_order  IN varchar,
+nid_vendor IN varchar,
+nid_produk IN varchar,
+njumlah IN number)
+
+IS
+BEGIN
+update D_PEMBELIAN
+set jumlah=njumlah
+where no_order=nno_order and id_vendor=nid_vendor and id_produk=nid_produk;
+end;
+
+
+create or replace PROCEDURE delete_beli(
+Nno_order  IN varchar,
+nid_produk IN varchar)
+
+IS
+BEGIN
+delete D_PEMBELIAN
+where no_order=nno_order and id_produk=nid_produk;
+end;
+
+
+
+
+CREATE TABLE  "D_PENJUALAN" 
+   (	"NO_REQUEST" VARCHAR2(25) NOT NULL ENABLE, 
+	"ID_CUST" VARCHAR2(25), 
+	"ID_PRODUK" VARCHAR2(25), 
+	"JUMLAH" NUMBER, 
+	"HARGA" NUMBER, 
+	"TGL_JUAL" DATE, 
+	 CONSTRAINT "D_PENJUALAN_PK" PRIMARY KEY ("NO_REQUEST") ENABLE
+   )
+/
+ALTER TABLE  "D_PENJUALAN" ADD CONSTRAINT "D_PENJUALAN_FK" FOREIGN KEY ("ID_CUST")
+	  REFERENCES  "D_CUSTOMER" ("ID_CUST") ENABLE
+/
+ALTER TABLE  "D_PENJUALAN" ADD CONSTRAINT "D_PENJUALAN_FK2" FOREIGN KEY ("ID_PRODUK")
+	  REFERENCES  "D_PRODUK" ("ID_PRODUK") ENABLE
+/
+
+
+
+CREATE OR REPLACE TRIGGER  "PENJUALAN" 
+before insert or update on D_PENJUALAN
+for each row
+ WHEN (new.id_produk is not null) begin
+update D_PRODUK
+set stok = stok - :new.jumlah
+where id_produk = :new.id_produk;
+end;
+/
+ALTER TRIGGER  "PENJUALAN" ENABLE
+/
+
+
+create or replace PROCEDURE insert_jual(
+Nno_req  IN varchar,
+nid_cus IN varchar,
+nid_produk IN varchar,
+njumlah IN number)
+IS
+BEGIN
+INSERT INTO D_PENJUALAN(no_request,id_cust,id_produk,jumlah)
+values(Nno_req,nid_cus,nid_produk,njumlah);
+end;
+
+create or replace PROCEDURE update_jual(
+Nno_req  IN varchar,
+nid_cus IN varchar,
+nid_produk IN varchar,
+njumlah IN number)
+IS
+BEGIN
+update D_PENJUALAN
+set jumlah=njumlah
+where no_request=nno_req  and id_cust=nid_cus and id_produk=nid_produk;
+end;
+
+create or replace PROCEDURE delete_jual(
+Nno_req  IN varchar,
+nid_produk IN varchar)
+IS
+BEGIN
+delete D_PENJUALAN
+where no_request=nno_req and id_produk=nid_produk;
+end;
+
+
+
+
+
+
+
+
+
+
+
