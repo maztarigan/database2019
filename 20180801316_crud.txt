@@ -281,3 +281,6 @@ https://www.mkyong.com/oracle/oracle-stored-procedure-delete-example/
 
 -- aplikasi oracle dataase
 https://youtu.be/Jhtk73bsBJU
+
+-- tugas akhir basisdata
+https://drive.google.com/file/d/1eXGCZcER6f24SPv-0eLEwBS4OizYH5AR/view?usp=sharing
